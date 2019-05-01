@@ -1,5 +1,36 @@
+type Profile {
+  id: ID! @unique
+  name: String!
+  dob: DateTime @default(value: "1990")
+  weight: Int @default(value: 65)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  titleFirst: String! @default(value: "Health")
+  titleMiddle: String! @default(value: "")
+  titleLast: String! @default(value: "Trainee")
+  bmi: Int! @default(value: 0)
+  bpm: Int! @default(value: 0)
+  points: Int! @default(value: 0)
+  goalIntake: Int! @default(value: 2000)
+  goalworkout: Int! @default(value: 500)
+  intakeWorkout: Int! @default(value: 0)
+  badges: [Badges!]!
+  stepsGoal: Int! @default(value: 10000)
+  waterGoal: Int! @default(value: 8)
+  waterIntake: Int! @default(value: 0)
+  avatarUrl: String
+}
+
 type User {
   id: ID! @unique
-  email: String @unique
+  username: String @unique
+  password: String!
+  profile: Profile
+}
+
+type Badges {
+  id: ID! @unique
   name: String!
+  desc: String!
+  imageUrl: String!
 }

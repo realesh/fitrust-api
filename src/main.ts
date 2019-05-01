@@ -1,23 +1,88 @@
 import { prisma } from '../generated/prisma-client';
+import datamodelInfo from '../generated/nexus-prisma';
+import * as path from 'path';
+// import { stringArg, idArg } from 'nexus';
+import { prismaObjectType, makePrismaSchema } from 'nexus-prisma';
 import { GraphQLServer } from 'graphql-yoga';
-import { users, createUser } from './queries/userQuery';
+// import { stringArg } from 'nexus/dist/core';
+import { Context } from './types/server-type';
 
-const resolvers = {
-  Query: {
-    users
-  },
-  Mutation: {
-    createUser
-  }
-  // User
-};
-const server = new GraphQLServer({
-  typeDefs: './schema.graphql',
-  resolvers,
-  context: {
-    prisma
+const User = prismaObjectType({
+  name: 'User',
+  definition(t) {
+    t.prismaFields(['username', 'profile']);
   }
 });
-server.start({ port: 3000 }, () =>
-  console.log('Server is running on http://localhost:3000')
-);
+const Query = prismaObjectType({
+  name: 'Query',
+  definition(t) {
+    t.prismaFields(['users', 'profiles']);
+    t.list.field('getAllUsers', {
+      type: 'User',
+      resolve: (_, _args, ctx: Context) => {
+        return ctx.prisma.users();
+      }
+    });
+    // t.list.field('getUserByName', {
+    //   type: 'User',
+    //   args: {
+    //     name: stringArg()
+    //   },
+    //   resolve: (_, { name }, ctx: Context) => {
+    //     return ctx.prisma.userProfiles({
+    //       where: { name_contains: name || '' }
+    //     });
+    //   }
+    // });
+  }
+});
+
+const Mutation = prismaObjectType({
+  name: 'Mutation',
+  definition(t) {
+    t.prismaFields(['createUser', 'updateUser', 'updateProfile']);
+    // t.prismaFields(['createUser', 'deletePost']);
+    // t.field('createDraft', {
+    //   type: 'Post',
+    //   args: {
+    //     title: stringArg(),
+    //     authorId: idArg({ nullable: true })
+    //   },
+    //   resolve: (_, { title, authorId }, ctx) =>
+    //     ctx.prisma.createPost({
+    //       title,
+    //       author: { connect: { id: authorId } }
+    //     })
+    // });
+    // t.field('publish', {
+    //   type: 'Post',
+    //   nullable: true,
+    //   args: { id: idArg() },
+    //   resolve: (_, { id }, ctx) =>
+    //     ctx.prisma.updatePost({
+    //       where: { id },
+    //       data: { published: true }
+    //     })
+    // });
+  }
+});
+
+const schema = makePrismaSchema({
+  types: [Query, Mutation, User],
+
+  prisma: {
+    datamodelInfo,
+    client: prisma
+  },
+
+  outputs: {
+    schema: path.join(__dirname, '../generated/schema.graphql'),
+    typegen: path.join(__dirname, '../generated/nexus.ts')
+  }
+});
+
+const server = new GraphQLServer({
+  schema,
+  context: { prisma }
+});
+server.start(() => console.log('Server is running on http://localhost:4000'));
