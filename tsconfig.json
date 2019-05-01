@@ -1,5 +1,12 @@
 {
+  "extends": "tsconfig-kodefox",
   "compilerOptions": {
-    "lib": ["es2016", "esnext.asynciterable"]
+    "lib": ["es2016", "esnext.asynciterable"],
+    "module": "commonjs",
+    "outDir": "./build",
+    "typeRoots": [
+      "node_modules/@types",
+      "custom_types"
+    ] /* List of folders to include type definitions from. */
   }
 }
