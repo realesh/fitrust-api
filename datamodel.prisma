@@ -23,7 +23,7 @@ type Profile {
 
 type User {
   id: ID! @unique
-  username: String @unique
+  username: String! @unique
   password: String!
   profile: Profile
 }
