@@ -1,18 +1,20 @@
-import { prisma } from '../generated/prisma-client';
+import {prisma} from '../generated/prisma-client';
 import datamodelInfo from '../generated/nexus-prisma';
 import * as path from 'path';
 // import { stringArg, idArg } from 'nexus';
-import { prismaObjectType, makePrismaSchema } from 'nexus-prisma';
-import { GraphQLServer } from 'graphql-yoga';
+import {prismaObjectType, makePrismaSchema} from 'nexus-prisma';
+import {GraphQLServer} from 'graphql-yoga';
 // import { stringArg } from 'nexus/dist/core';
-import { Context } from './types/server-type';
+import {Context} from './types/server-type';
+import * as allResolvers from './resolvers';
 
 const User = prismaObjectType({
   name: 'User',
   definition(t) {
     t.prismaFields(['username', 'profile']);
-  }
+  },
 });
+
 const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
@@ -21,7 +23,7 @@ const Query = prismaObjectType({
       type: 'User',
       resolve: (_, _args, ctx: Context) => {
         return ctx.prisma.users();
-      }
+      },
     });
     // t.list.field('getUserByName', {
     //   type: 'User',
@@ -34,7 +36,7 @@ const Query = prismaObjectType({
     //     });
     //   }
     // });
-  }
+  },
 });
 
 const Mutation = prismaObjectType({
@@ -64,25 +66,35 @@ const Mutation = prismaObjectType({
     //       data: { published: true }
     //     })
     // });
-  }
+  },
 });
 
 const schema = makePrismaSchema({
-  types: [Query, Mutation, User],
+  types: [Query, Mutation, User, allResolvers],
 
   prisma: {
     datamodelInfo,
-    client: prisma
+    client: prisma,
   },
 
   outputs: {
     schema: path.join(__dirname, '../generated/schema.graphql'),
-    typegen: path.join(__dirname, '../generated/nexus.ts')
-  }
+    typegen: path.join(__dirname, '../generated/nexus.ts'),
+  },
+
+  typegenAutoConfig: {
+    sources: [
+      {
+        source: path.join(__dirname, './types.ts'),
+        alias: 'types',
+      },
+    ],
+    contextType: 'types.Context',
+  },
 });
 
 const server = new GraphQLServer({
   schema,
-  context: { prisma }
+  context: {prisma},
 });
 server.start(() => console.log('Server is running on http://localhost:4000'));

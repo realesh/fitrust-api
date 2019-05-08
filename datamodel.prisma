@@ -1,7 +1,7 @@
 type Profile {
   id: ID! @unique
   name: String!
-  dob: DateTime @default(value: "1990")
+  dob: DateTime!
   weight: Int @default(value: 65)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -25,7 +25,7 @@ type User {
   id: ID! @unique
   username: String! @unique
   password: String!
-  profile: Profile
+  profile: Profile!
 }
 
 type Badges {
