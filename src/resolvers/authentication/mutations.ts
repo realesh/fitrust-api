@@ -25,6 +25,7 @@ export let register = mutationField('registerUser', {
       },
     });
     return {
+      id: result.id,
       token: sign(
         {
           userID: result.id,
