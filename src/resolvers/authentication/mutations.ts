@@ -1,5 +1,5 @@
 import {mutationField, stringArg} from 'nexus/dist';
-import {RegisterUser, LoginUser} from './schema';
+import {RegisterUser, LoginUser, ChangePassword} from './schema';
 import {hash, compare} from 'bcrypt';
 import {sign} from 'jsonwebtoken';
 import {APP_SECRET} from '../../SECRET';
@@ -49,7 +49,7 @@ export let login = mutationField('loginUser', {
     let profile = await context.prisma.user({username}).profile();
 
     if (!result) {
-      throw new Error('Email not found!');
+      throw new Error('Username not found!');
     }
     let isPasswordValid = await compare(password, result.password);
     if (isPasswordValid) {
@@ -65,6 +65,40 @@ export let login = mutationField('loginUser', {
         name: profile.name,
       };
     }
-    throw new Error("Email and password doesn't match");
+    throw new Error("Username and password doesn't match");
+  },
+});
+
+export let changePassword = mutationField('changePassword', {
+  type: ChangePassword,
+  args: {
+    id: stringArg({required: true}),
+    oldPassword: stringArg({required: true}),
+    newPassword: stringArg({required: true}),
+  },
+  resolve: async (_, {id, oldPassword, newPassword}, context) => {
+    let result = await context.prisma.user({id});
+    let isPasswordValid = await compare(oldPassword, result.password);
+    let hashPassword = await hash(newPassword, 10);
+
+    if (!result) {
+      throw new Error('UserID not found!');
+    }
+
+    if (isPasswordValid) {
+      await context.prisma.updateUser({
+        data: {
+          password: hashPassword,
+        },
+        where: {
+          id,
+        },
+      });
+      return {
+        id: result.id,
+      };
+    }
+
+    throw new Error('Invalid password!');
   },
 });

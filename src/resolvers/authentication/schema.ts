@@ -14,6 +14,13 @@ export let LoginUser = objectType({
   },
 });
 
+export let ChangePassword = objectType({
+  name: 'ChangePassword',
+  definition(t){
+    t.string('id')
+  }
+})
+
 export let VerifyToken = objectType({
   name: 'VerifyToken',
   definition(t) {
