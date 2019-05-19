@@ -11,7 +11,7 @@ type Profile {
   bpm: Int! @default(value: 0)
   points: Int! @default(value: 0)
   goalIntake: Int! @default(value: 2000)
-  goalworkout: Int! @default(value: 500)
+  goalWorkout: Int! @default(value: 500)
   workoutValue: Int! @default(value: 0)
   intakeValue: Int! @default(value: 0)
   badges: [Badges!]!
