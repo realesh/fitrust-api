@@ -7,6 +7,9 @@ export let UserBadges = objectType({
     t.list.field('userBadges', {
       type: Badges, // here
     });
+    t.list.field('lockedBadges', {
+      type: Badges, // here
+    });
   },
 });
 
