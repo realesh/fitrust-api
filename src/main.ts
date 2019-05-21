@@ -16,7 +16,17 @@ const User = prismaObjectType({
 const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
-    t.prismaFields(['user', 'users', 'profiles', 'badges', 'badgeses', 'badgesesConnection']);
+    t.prismaFields([
+      'user',
+      'users',
+      'profiles',
+      'badges',
+      'exerciseCoupon',
+      'badgeses',
+      'badgesesConnection',
+      'exerciseCoupons',
+      'exerciseCouponsConnection',
+    ]);
     t.list.field('getAllUsers', {
       type: 'User',
       resolve: (_, _args, ctx: Context) => {
@@ -29,7 +39,13 @@ const Query = prismaObjectType({
 const Mutation = prismaObjectType({
   name: 'Mutation',
   definition(t) {
-    t.prismaFields(['createUser', 'updateUser', 'updateProfile', 'createBadges']);
+    t.prismaFields([
+      'createUser',
+      'updateUser',
+      'updateProfile',
+      'createBadges',
+      'createExerciseCoupon',
+    ]);
   },
 });
 

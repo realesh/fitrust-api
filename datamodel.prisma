@@ -15,7 +15,10 @@ type Profile {
   workoutValue: Int! @default(value: 0)
   intakeValue: Int! @default(value: 0)
   badges: [Badges!]!
+  exerciseCoupons: [ExerciseCoupon!]!
   stepsGoal: Int! @default(value: 10000)
+  stepsClaimed: Int! @default(value: 0)
+  waterClaimed: Int! @default(value: 0)
   waterGoal: Int! @default(value: 8)
   waterValue: Int! @default(value: 0)
   avatarUrl: String! @default(value: "https://i.imgur.com/herOTsM.png")
@@ -33,4 +36,12 @@ type Badges {
   name: String!
   desc: String!
   imageUrl: String!
+}
+
+type ExerciseCoupon {
+  id: ID! @unique
+  type: String!
+  duration: Int!
+  startTime: String!
+  finishTime: String!
 }
