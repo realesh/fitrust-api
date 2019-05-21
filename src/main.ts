@@ -45,6 +45,7 @@ const Mutation = prismaObjectType({
       'updateProfile',
       'createBadges',
       'createExerciseCoupon',
+      'deleteExerciseCoupon',
     ]);
   },
 });

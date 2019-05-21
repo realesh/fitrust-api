@@ -44,4 +44,5 @@ type ExerciseCoupon {
   duration: Int!
   startTime: String!
   finishTime: String!
+  date: String!
 }
