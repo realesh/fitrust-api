@@ -14,6 +14,10 @@ export let register = mutationField('registerUser', {
   },
   resolve: async (_, {dob, name, password, username}, context) => {
     let hashPassword = await hash(password, 10);
+    let now = new Date().getFullYear();
+    let dobYear = new Date(dob).getFullYear();
+    let age = now - dobYear;
+
     let result = await context.prisma.createUser({
       username,
       password: hashPassword,
@@ -21,6 +25,7 @@ export let register = mutationField('registerUser', {
         create: {
           name,
           dob,
+          bpm: 220 - age,
         },
       },
     });
