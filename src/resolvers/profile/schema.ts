@@ -31,3 +31,24 @@ export let ConnectBadges = objectType({
     t.int('statusCode'), t.string('name'), t.string('imageUrl');
   },
 });
+
+export let IncCouponsRedeemed = objectType({
+  name: 'IncCouponsRedeemed',
+  definition(t) {
+    t.int('total');
+  },
+});
+
+export let ClaimStepsGoal = objectType({
+  name: 'ClaimStepsGoal',
+  definition(t) {
+    t.int('total');
+  },
+});
+
+export let ClaimWaterGoal = objectType({
+  name: 'ClaimWaterGoal',
+  definition(t) {
+    t.int('total');
+  },
+});

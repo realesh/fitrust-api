@@ -1,5 +1,5 @@
 import {mutationField, stringArg} from 'nexus/dist';
-import {ConnectBadges} from './schema';
+import {ConnectBadges, IncCouponsRedeemed, ClaimStepsGoal, ClaimWaterGoal} from './schema';
 import {Badges} from '../../../generated/prisma-client';
 
 export let connectBadges = mutationField('connectBadges', {
@@ -50,5 +50,104 @@ export let connectBadges = mutationField('connectBadges', {
         imageUrl: '',
       };
     }
+  },
+});
+
+export let incCouponsRedeemed = mutationField('incCouponsRedeemed', {
+  type: IncCouponsRedeemed,
+  args: {
+    id: stringArg({required: true}),
+  },
+  resolve: async (_, {id}, context) => {
+    let currTotal = await context.prisma
+      .user({id})
+      .profile()
+      .couponsRedeemed();
+    await context.prisma.updateUser({
+      data: {
+        profile: {
+          update: {
+            couponsRedeemed: currTotal + 1,
+          },
+        },
+      },
+      where: {
+        id,
+      },
+    });
+
+    return {
+      total: currTotal + 1,
+    };
+  },
+});
+
+export let claimStepsGoal = mutationField('claimStepsGoal', {
+  type: ClaimStepsGoal,
+  args: {
+    id: stringArg({required: true}),
+  },
+  resolve: async (_, {id}, context) => {
+    let currTotal = await context.prisma
+      .user({id})
+      .profile()
+      .stepsClaimed();
+    let currPoints = await context.prisma
+      .user({id})
+      .profile()
+      .points();
+    await context.prisma.updateUser({
+      data: {
+        profile: {
+          update: {
+            todayStepClaimed: 1,
+            points: currPoints + 100,
+            stepsClaimed: currTotal + 1,
+          },
+        },
+      },
+      where: {
+        id,
+      },
+    });
+
+    return {
+      total: currTotal + 1,
+    };
+  },
+});
+
+export let claimWaterGoal = mutationField('claimWaterGoal', {
+  type: ClaimWaterGoal,
+  args: {
+    id: stringArg({required: true}),
+  },
+  resolve: async (_, {id}, context) => {
+    let currTotal = await context.prisma
+      .user({id})
+      .profile()
+      .waterClaimed();
+    let currPoints = await context.prisma
+      .user({id})
+      .profile()
+      .points();
+    await context.prisma.updateUser({
+      data: {
+        profile: {
+          update: {
+            todaywaterClaimed: 1,
+            points: currPoints + 50,
+            waterClaimed: currTotal + 1,
+          },
+        },
+      },
+      where: {
+        id,
+      },
+    });
+
+    return {
+      total: currTotal + 1,
+    };
   },
 });
