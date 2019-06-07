@@ -1,4 +1,4 @@
-import {mutationField, stringArg} from 'nexus/dist';
+import {mutationField, stringArg, idArg} from 'nexus/dist';
 import {ConnectBadges, IncCouponsRedeemed, ClaimStepsGoal, ClaimWaterGoal} from './schema';
 import {Badges} from '../../../generated/prisma-client';
 
@@ -56,7 +56,7 @@ export let connectBadges = mutationField('connectBadges', {
 export let incCouponsRedeemed = mutationField('incCouponsRedeemed', {
   type: IncCouponsRedeemed,
   args: {
-    id: stringArg({required: true}),
+    id: idArg({required: false}),
   },
   resolve: async (_, {id}, context) => {
     let currTotal = await context.prisma
