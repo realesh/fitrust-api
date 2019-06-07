@@ -24,3 +24,10 @@ const Badges = objectType({
     t.boolean('unlocked');
   },
 });
+
+export let ConnectBadges = objectType({
+  name: 'ConnectBadges',
+  definition(t) {
+    t.int('statusCode'), t.string('name'), t.string('imageUrl');
+  },
+});
