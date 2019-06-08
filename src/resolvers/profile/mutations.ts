@@ -13,7 +13,7 @@ export let connectBadges = mutationField('connectBadges', {
       .user({id})
       .profile()
       .badges();
-    let userBadgesIDList = userBadgesList.map((badge: Badges) => badge.id);
+    let userBadgesIDList = userBadgesList.map((badge: Badges) => badge.id) || [];
     let findIndex = userBadgesIDList.findIndex((itemID: string) => itemID === badgeID);
     if (findIndex === -1) {
       let badgeUnlocked = await context.prisma.badges({id: badgeID});
@@ -42,12 +42,14 @@ export let connectBadges = mutationField('connectBadges', {
         statusCode: 200,
         name: badgeUnlocked.name,
         imageUrl: badgeUnlocked.imageUrl,
+        badgePoints: badgeUnlocked.points,
       };
     } else {
       return {
         statusCode: 409,
         name: '',
         imageUrl: '',
+        badgePoints: 0,
       };
     }
   },
